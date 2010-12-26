@@ -13,6 +13,6 @@ my ( $highs, $lows ) = $wwo->forecast_temperatures;
 my $forecast = Chart::Weather::Forecast::Temperature->new(
     highs      => $highs,
     lows       => $lows,
-    title_text => "$zip Temperature Forcecast",
+    title_text => "Temp Forcecast for $zip",
 );
 $forecast->create_chart;

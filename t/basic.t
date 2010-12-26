@@ -1,15 +1,18 @@
 use Chart::Weather::Forecast::Temperature;
 use Try::Tiny;
+use Image::Imlib2;
 use Test::More;
 
 my $highs = [ 37, 28, 17, 22, 28, 25, 23 ];
 my $lows  = [ 18, 14, -4, 10, 18, 17, 15 ];
-my $have_issues = 0;
 
+# Test basic flow
+my $have_issues = 0;
+my $forecast;
 try {
-    my $forecast = Chart::Weather::Forecast::Temperature->new(
-        highs      => $highs,
-        lows       => $lows,
+    $forecast = Chart::Weather::Forecast::Temperature->new(
+        highs       => $highs,
+        lows        => $lows,
         chart_width => 280,
     );
     $forecast->create_chart;
@@ -17,7 +20,35 @@ try {
 catch {
     $have_issues = 1;
 };
+is( $have_issues, 0, 'Canonical work flow' );
 
-is($have_issues, 0, 'No errors thrown while calling new and create_chart');
+# Test we can read the image, its width in particular
+my $image = Image::Imlib2->load($forecast->chart_temperature_file);
+is($image->width, 280, 'chart width');
+
+# Test that highs and lows are required
+my $no_highs_failure = 0;
+try {
+    my $temperature_forecast = Chart::Weather::Forecast::Temperature->new(
+        highs => [],
+        lows  => [ 32, 45, 72 ],
+    );
+}
+catch {
+    $no_highs_failure = 1;
+};
+is( $no_highs_failure, 1, 'Constructor fails when no highs passed' );
+
+my $no_lows_failure = 0;
+try {
+    my $temperature_forecast = Chart::Weather::Forecast::Temperature->new(
+        highs => [ 32, 45, 72 ],
+        lows  => [],
+    );
+}
+catch {
+    $no_lows_failure = 1;
+};
+is( $no_lows_failure, 1, 'Constructor fails when no lows passed' );
 
 done_testing();

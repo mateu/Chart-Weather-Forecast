@@ -12,6 +12,7 @@ use Graphics::Primitive::Font;
 use Graphics::Color::RGB;
 use Number::Format;
 use List::Util qw/ min max /;
+use Path::Class qw/ file /;
 
 use Data::Dumper::Concise;
 
@@ -23,7 +24,7 @@ use Data::Dumper::Concise;
     my $forecast = Chart::Weather::Forecast::Temperature->new(
         highs      => $highs,
         lows       => $lows,
-        title_text => "5-day Temperature Forcecast",
+        chart_temperature_file => '/tmp/temperature_forecast.png',
     );
     $forecast->create_chart;
 
@@ -45,7 +46,7 @@ ArrayRef[Num] of low temperatures
 
 Where you want to write out the chart image.
 
-    Default: /tmp/temperature-forecast.png'
+    Default: /tmp/temperature-forecast.png' on *nix
 
 =head2 chart_width
 
@@ -85,8 +86,8 @@ has 'lows' => (
 );
 has 'chart_temperature_file' => (
     is      => 'ro',
-    isa     => 'Str',
-    default => sub { '/tmp/temperature-forecast.png' },
+    isa     => 'Path::Class::File',
+    default => sub { Path::Class::file(File::Spec->tmpdir, 'temperature-forecast.png') },
 );
 has 'chart_format' => (
     is      => 'ro',
