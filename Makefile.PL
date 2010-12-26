@@ -1,6 +1,6 @@
 use inc::Module::Install;
 
-name 'Chart-Weather';
+name 'Chart-Weather-Forecast';
 
 abstract 'Forecast Weather Charts';
 author 'Mateu X Hunter';

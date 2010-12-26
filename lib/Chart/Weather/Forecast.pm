@@ -1,4 +1,4 @@
-package Chart::Weather;
+package Chart::Weather::Forecast;
 use Moose;
 use namespace::autoclean;
 
