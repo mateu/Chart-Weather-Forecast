@@ -16,5 +16,7 @@ requires(
     'List::Util'            => 0,
 );
 
+test_requires 'Try::Tiny' => 0;
+
 auto_install;
 WriteAll;

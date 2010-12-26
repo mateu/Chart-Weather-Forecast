@@ -1,5 +1,5 @@
-Chart::Weather::Forecast::Temperature;
-Weather::WWO;
+use Chart::Weather::Forecast::Temperature;
+use Weather::WWO;
 
 my $api_key = 'faa2489de6022450101712';
 my $zip     = '59802';

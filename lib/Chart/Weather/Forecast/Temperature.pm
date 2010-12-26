@@ -49,15 +49,15 @@ Where you want to write out the chart image.
 
 =head2 chart_width
 
-Chart dimension
+Chart dimension in pixels
 
-    Default: 240px
+    Default: 240
 
 =head2 chart_height
 
-Chart dimension
+Chart dimension in pixels
 
-    Default: 160px
+    Default: 160
 
 =head2 chart_format
 
@@ -108,7 +108,10 @@ has 'chart_height' => (
 has 'title_text' => (
     is        => 'rw',
     isa       => 'Str',
-    'default' => 'Temperature Forecast',
+    'default' => sub {
+        my $self = shift;
+        return $self->number_of_datum . '-Day Temperature Forecast';
+    },
 );
 has 'title_font' => (
     is        => 'rw',
@@ -152,9 +155,10 @@ has 'freezing_line' => (
     isa       => 'Chart::Clicker::Data::Series',
     lazy      => 1,
     'default' => sub {
+        my $self = shift;
         Chart::Clicker::Data::Series->new(
-            keys => [ 1, 2, 3, 4, 5 ],
-            values => [ (32) x 5 ],
+            keys =>  $self->x_values,
+            values => [ (32) x $self->number_of_datum ],
         );
     },
 );
@@ -163,9 +167,10 @@ has 'zero_line' => (
     isa       => 'Chart::Clicker::Data::Series',
     lazy      => 1,
     'default' => sub {
+        my $self = shift;
         Chart::Clicker::Data::Series->new(
-            keys => [ 1, 2, 3, 4, 5 ],
-            values => [ (0) x 5 ],
+            keys =>  $self->x_values,
+            values => [ (0) x $self->number_of_datum ],
         );
     },
 );
@@ -174,9 +179,10 @@ has 'high_series' => (
     isa       => 'Chart::Clicker::Data::Series',
     lazy      => 1,
     'default' => sub {
+        my $self = shift;
         Chart::Clicker::Data::Series->new(
-            keys   => [ 1, 2, 3, 4, 5 ],
-            values => shift->highs,
+            keys   => $self->x_values,
+            values => $self->highs,
         );
     },
 );
@@ -185,9 +191,10 @@ has 'low_series' => (
     isa       => 'Chart::Clicker::Data::Series',
     lazy      => 1,
     'default' => sub {
+        my $self = shift;
         Chart::Clicker::Data::Series->new(
-            keys   => [ 1, 2, 3, 4, 5 ],
-            values => shift->lows,
+            keys   => $self->x_values,
+            values => $self->lows,
         );
     },
 );
@@ -264,6 +271,13 @@ has 'number_of_datum' => (
     isa        => 'Int',
     lazy_build => 1,
 );
+has 'x_values' => (
+    is => 'ro',
+    isa => 'ArrayRef[Int]',
+    lazy_build => 1,
+);
+
+
 
 =head1 Methods
 
@@ -276,7 +290,7 @@ This is the main method to call on an object to create a chart.
 sub create_chart {
     my $self = shift;
 
-    $self->default_ctx->domain_axis->tick_values( [qw(1 2 3 4 5)] );
+    $self->default_ctx->domain_axis->tick_values( $self->x_values );
     $self->default_ctx->range_axis->tick_values( $self->range_ticks );
     $self->default_ctx->domain_axis->range($self->domain);
     $self->default_ctx->range_axis->range( $self->range );
@@ -347,6 +361,11 @@ sub _build_range {
     );
 }
 
+sub _build_x_values {
+    my $self = shift;
+    
+    return [1..$self->number_of_datum];
+}
 
 # Add just a touch of padding in case a value is right on the computed range.
 # This keeps data from being cropped off in the graph.
