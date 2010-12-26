@@ -291,13 +291,11 @@ This is the main method to call on an object to create a chart.
 sub create_chart {
     my $self = shift;
 
-    $self->default_ctx->domain_axis->tick_values( $self->x_values );
-    $self->default_ctx->range_axis->tick_values( $self->range_ticks );
-    $self->default_ctx->domain_axis->range($self->domain);
-    $self->default_ctx->range_axis->range( $self->range );
-
+    # Add high series data set and color it red
     $self->dataset->add_to_series( $self->high_series );
     $self->color_allocator->add_to_colors( $self->colors->{red} );
+    
+    # Add low series data set and color it blue
     $self->dataset->add_to_series( $self->low_series );
     $self->color_allocator->add_to_colors( $self->colors->{blue} );
 
@@ -470,10 +468,11 @@ sub _build_chart {
         format => $self->chart_format,
     );
 
+    # Title
     $chart->title->text( $self->title_text );
     $chart->title->font( $self->title_font );
 
-    # Tufte influenced customizations
+    # Tufte influenced customizations (maximize data-to-ink)
     $chart->grid_over(1);
     $chart->plot->grid->show_range(0);
     $chart->plot->grid->show_domain(0);
@@ -488,25 +487,39 @@ sub _build_default_ctx {
 
     my $default_ctx = $self->chart->get_context('default');
 
-    # Do some customization of context here
+    # Set number format of axis
     $default_ctx->domain_axis->format(
         sub { return $self->number_formatter->format_number(shift); } );
-    $default_ctx->domain_axis->tick_font( $self->tick_font );
-    $default_ctx->range_axis->tick_font( $self->tick_font );
     $default_ctx->range_axis->format(
         sub { return $self->number_formatter->format_number(shift); } );
+        
+    # Set font of ticks
+    $default_ctx->domain_axis->tick_font( $self->tick_font );
+    $default_ctx->range_axis->tick_font( $self->tick_font );
+    
+    # The chart type is a "connect the dots" (line segments between data circles)
     $default_ctx->renderer( Chart::Clicker::Renderer::Line->new );
     $default_ctx->renderer->shape(
         Geometry::Primitive::Circle->new( { radius => 3, } ) );
     $default_ctx->renderer->brush->width(1);
+    
+    # Set ticks values for each axis
+    $default_ctx->domain_axis->tick_values( $self->x_values );
+    $default_ctx->range_axis->tick_values( $self->range_ticks );
+
+    # Set max and min values for each axis.
+    $default_ctx->domain_axis->range($self->domain);
+    $default_ctx->range_axis->range($self->range);
 
     return $default_ctx;
 }
 
 sub BUILD {
     my $self = shift;
+    
     $self->_build_y_range;
     $self->_build_y_range_padded;
+    $self->_build_default_ctx;
 }
 
 __PACKAGE__->meta->make_immutable;
