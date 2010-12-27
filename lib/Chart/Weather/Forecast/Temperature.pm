@@ -514,6 +514,13 @@ sub _build_default_ctx {
     return $default_ctx;
 }
 
+=head2 BUILD
+
+Here we do some initialization just after the object has been constructed.
+Calling these builders here helped me defeat undef occuring from lazy dependencies.
+
+=cut
+
 sub BUILD {
     my $self = shift;
     

@@ -1,5 +1,4 @@
 /blib
-/inc
 inc/*
 blib/*
 .project
@@ -9,3 +8,5 @@ Makefile.old
 META.yml
 pm_to_blib
 /scratch
+.build
+Chart-Weather-Forecast*

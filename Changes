@@ -1,12 +1,6 @@
-0.03  2010-dec-21
-      Address Tests:
-      - add Data::Dumper::Concise dependencies.  This really doesn't have to be dep, 
-        but I it so much and sometimes I forget to pull Dumper code before release 
-        so I'm just adding as a dependency.
+{{$NEXT}}
+0.02  2010-dec-26
+      - Correct Changes, remove some cruft
 
-0.02  2010-dec-20
-      Improvements: 
-      - More POD
-
-0.01  2010-dec-19
+0.01  2010-dec-26
       - Initial Release
