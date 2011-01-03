@@ -1,25 +1,28 @@
 use Chart::Weather::Forecast::Temperature;
 use Try::Tiny;
 use Test::More;
+use Data::Dumper::Concise;
 
 my $highs = [ 37, 28, 17, 22, 28, 25, 23 ];
 my $lows  = [ 18, 14, -4, 10, 18, 17, 15 ];
 
 # Test basic flow
-my $have_issues = 0;
+my $issue;
 my $forecast;
+my $file = Path::Class::File->new('/tmp/', 'high-low_temperature-forecast.png');
 try {
     $forecast = Chart::Weather::Forecast::Temperature->new(
         highs       => $highs,
         lows        => $lows,
         chart_width => 280,
+        chart_temperature_file => $file,
     );
     $forecast->create_chart;
 }
 catch {
-    $have_issues = 1;
+    $issue = $_;
 };
-is( $have_issues, 0, 'Canonical work flow' );
+is( $issue, undef, 'Canonical work flow' );
 
 SKIP: 
 {

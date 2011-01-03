@@ -1,5 +1,10 @@
 {{$NEXT}}
-
+          Fixes:
+          - Make Imlib2 based tests optional
+          - Correct documentation on the chart_temperature_file attribute.
+            It is a Path::Class:File object so one must pass an object of that type.
+          
+          
 0.02      2010-12-26 21:19:28 America/Denver
           - Correct Changes, remove some cruft
 
