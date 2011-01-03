@@ -1,3 +1,4 @@
+use strictures 1;
 package Chart::Weather::Forecast::Temperature;
 use Moose;
 use namespace::autoclean;

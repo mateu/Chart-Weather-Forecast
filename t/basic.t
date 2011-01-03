@@ -1,6 +1,5 @@
 use Chart::Weather::Forecast::Temperature;
 use Try::Tiny;
-use Image::Imlib2;
 use Test::More;
 
 my $highs = [ 37, 28, 17, 22, 28, 25, 23 ];
@@ -22,9 +21,16 @@ catch {
 };
 is( $have_issues, 0, 'Canonical work flow' );
 
-# Test we can read the image, its width in particular
-my $image = Image::Imlib2->load($forecast->chart_temperature_file);
-is($image->width, 280, 'chart width');
+SKIP: 
+{
+    eval 'use Image::Imlib2';
+    skip( 'because Image::Imlib2 is required to test output image', 1 ) if $@;
+        
+    # Test we can read the image, its width in particular
+    my $image = Image::Imlib2->load($forecast->chart_temperature_file);
+    is($image->width, 280, 'chart width');
+
+}
 
 # Test that highs and lows are required
 my $no_highs_failure = 0;
