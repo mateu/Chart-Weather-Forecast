@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.03      2011-01-03 12:06:37 America/Denver
           Fixes:
           - Make Imlib2 based tests optional
           - Correct documentation on the chart_temperature_file attribute.
