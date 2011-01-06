@@ -2,6 +2,7 @@ use strictures 1;
 package Chart::Weather::Forecast::Temperature;
 use Moose;
 use namespace::autoclean;
+use MooseX::Types::Path::Class;
 
 use Chart::Clicker;
 use Chart::Clicker::Data::Range;
@@ -92,9 +93,11 @@ has 'lows' => (
     required => 1,
 );
 has 'chart_temperature_file' => (
-    is      => 'ro',
-    isa     => 'Path::Class::File',
-    default => sub {  Path::Class::File->new(File::Spec->tmpdir, 'temperature-forecast.png') },
+    is        => 'ro',
+    isa       => 'Path::Class::File',
+    required  => 1,
+    coerce    => 1,
+    'default' => sub {  Path::Class::File->new(File::Spec->tmpdir, 'temperature-forecast.png') },
 );
 has 'chart_format' => (
     is      => 'ro',

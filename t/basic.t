@@ -9,13 +9,11 @@ my $lows  = [ 18, 14, -4, 10, 18, 17, 15 ];
 # Test basic flow
 my $issue;
 my $forecast;
-my $file = Path::Class::File->new('/tmp/', 'high-low_temperature-forecast.png');
 try {
     $forecast = Chart::Weather::Forecast::Temperature->new(
         highs       => $highs,
         lows        => $lows,
         chart_width => 280,
-        chart_temperature_file => $file,
     );
     $forecast->create_chart;
 }
