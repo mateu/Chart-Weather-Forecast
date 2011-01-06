@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.04      2011-01-06 08:40:14 America/Denver
           Fixes:
           - Properly coerce file paths into a Path::Class::File object
             by using MooseX::Types::Path::Class
